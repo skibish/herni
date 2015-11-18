@@ -72,6 +72,15 @@ class Session:
     def add_balance(self, amount):
         self.balance += amount
 
+    def return_balance(self):
+        self.balance = 0
+
+    def pay(self, price):
+        if self.balance < price:
+            return False
+        self.balance -= price
+        return True
+
 
 class RestServer:
 
@@ -89,7 +98,7 @@ class RestServer:
         global filler_url
         print "Initializing..."
         session = Session()
-        for i in range(1, slot_count+1):
+        for i in range(0, slot_count):
             slots.append(Slot(i, slot_capacity))
         data = request.get_json(silent=True)
         filler_url = data['filler_url']
@@ -98,10 +107,8 @@ class RestServer:
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
         print "Requesting product list from Filler"
         r = requests.post(url, data=json.dumps(data), headers=headers)
-        print "sending request"
         if r.status_code != 200:
             return "Filler returned %d" % r.status_code, r.status_code
-        print "success"
         resp = json.loads(r.text)
         for item in resp['products']:
             p = Product(item['id'], item['name'], item['price'])
@@ -120,7 +127,19 @@ class RestServer:
         for s in slots:
             if s.used_slots != 0:
                 products.append(s.to_dict())
+        print "Product list"
         data = {'products': products}
+        return json.dumps(data)
+
+    # UI
+    @staticmethod
+    @app.route('/balance', methods=['GET'])
+    def balance():
+        global session
+        if session is None:
+            return "Logic not initialized", 500
+        print "Current balance: %d" % session.get_balance()
+        data = {'credit': session.get_balance()}
         return json.dumps(data)
 
     # UI
@@ -132,18 +151,21 @@ class RestServer:
             return "Logic not initialized", 500
         data = request.get_json(silent=True)
         session.add_balance(data['credit'])
+        print "Added %d to the balance" % data['credit']
         resp = {'credit': session.get_balance()}
         return json.dumps(resp)
 
     # UI
     @staticmethod
-    @app.route('/balance', methods=['GET'])
-    def balance():
+    @app.route('/balance_return', methods=['GET'])
+    def balance_return():
         global session
         if session is None:
             return "Logic not initialized", 500
-        data = {'credit': session.get_balance()}
-        return json.dumps(data)
+        session.return_balance()
+        print "Balance returned"
+        resp = {'credit': session.get_balance()}
+        return json.dumps(resp)
 
     # UI
     @staticmethod
@@ -151,13 +173,21 @@ class RestServer:
     def purchase():
         global session
         if session is None:
+            print "Logic not initialized"
             return "Logic not initialized", 500
         data = request.get_json(silent=True)
+        if data['slot'] >= slot_count:
+            print "Bad slot number. Expected 0 - %d" % slot_count
+            return "Bad slot"
         res = 'fail'
-        if session.get_balance() >= slots[data['slot']].get_price():
-            if slots[data['slot']].issue():
+        price = slots[data['slot']].get_price()
+        if session.get_balance() >= price:
+            if slots[data['slot']].issue() and session.pay(price):
                 res = 'success'
+            else:
+                print "Purchase issuing failed"
         else:
+            print "Balance is too low"
             res = 'low balance'
         result = {"result": res, "credit": session.get_balance()}
         return json.dumps(result)
@@ -167,11 +197,12 @@ class RestServer:
     @app.route('/slot_refill', methods=['POST'])
     def slot_refill():
         data = request.get_json(silent=True)
+        data = data['product']
         p = Product(data['id'], data['name'], data['price'])
         slot_num = data['slot']
         count = data['count']
         slots[slot_num].fill(p, count)
-        print 'Added %d %s to slot %d' % (count, data['name'], slot_num)
+        print 'Refilled %d %s to slot %d' % (count, data['name'], slot_num)
         return ""
 
 if __name__ == '__main__':
