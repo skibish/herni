@@ -131,5 +131,5 @@ class CreditCardPayment(GlobalContentReader):
         PaymentTransactionLog.log_transaction('transaction.log',
                                               data['ccnum'], data['price'], data['name'], data['description'])
 
-        response = {'success': True, 'message': 'Платёж успешно выполнен.',
-            'description': 'Payment has been successfully made.'}
+        return {'success': True, 'message': 'Платёж успешно выполнен.',
+                'description': 'Payment has been successfully made.'}
