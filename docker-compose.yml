@@ -19,7 +19,7 @@ filler:
   working_dir: /app
   command: python filler.py -d
 interface:
-  build: ./config/docker/interface
+  image: node:4.2
   environment:
     - LOGIC_URL=http://logic:4567
     - PORT=8080
@@ -30,6 +30,6 @@ interface:
   volumes:
     - ./interface:/app
   working_dir: /app
-  command: node server.js
+  command: npm install --production && node server.js
   links:
     - logic
