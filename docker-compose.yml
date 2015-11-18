@@ -1,0 +1,32 @@
+logic:
+  build: ./config/docker/logic
+  expose:
+    - "4567"
+  ports:
+    - 8081:4567
+  volumes:
+    - ./logic:/app
+  working_dir: /app
+  command: python logic.py -d
+  links:
+    - filler
+filler:
+  build: ./config/docker/logic
+  expose:
+    - "4568"
+  volumes:
+    - ./logic:/app
+  working_dir: /app
+  command: python filler.py -d
+interface:
+  build: ./config/docker/interface
+  expose:
+    - "8080"
+  ports:
+    - 8080:8080
+  volumes:
+    - ./interface:/app
+  working_dir: /app
+  command: http-server
+  links:
+    - logic
