@@ -4,13 +4,6 @@ import Item from './Item.jsx';
 class ItemList extends React.Component {
   constructor(props) {
     super(props);
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(event) {
-    console.log('this is clicked', event.target);
-    this.props.onItemSelection();
   }
 
   render() {
@@ -19,11 +12,14 @@ class ItemList extends React.Component {
       return (
         <Item
           key={product.slot}
+          slot={product.slot}
           name={product.name}
           price={product.price}
           count={product.count}
           isSelectable={isSelectable}
-          onSelectClick={this.handleClick} />
+          onSelectClick={this.props.onItemSelection}
+          selectedItem={this.props.selectedItem}
+           />
         );
     });
 
