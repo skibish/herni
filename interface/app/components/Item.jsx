@@ -3,6 +3,12 @@ import React from 'react';
 class Item extends React.Component {
   constructor(props) {
     super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    this.props.onSelectClick(this.props.slot);
   }
 
   render() {
@@ -11,7 +17,7 @@ class Item extends React.Component {
         <div className="panel-heading"><span className="name">{this.props.name}</span>{' '}<span className="price">${this.props.price}</span></div>
         <div className="panel-body">{this.props.count}</div>
         <div className="panel-footer">
-          <button className="btn btn-default pull-right" disabled={!this.props.isSelectable} onClick={this.props.onSelectClick}>Select</button>
+          <button className="btn btn-default pull-right" disabled={!this.props.isSelectable} onClick={this.handleClick}>Select</button>
           <div className="clearfix"></div>
         </div>
       </div>

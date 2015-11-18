@@ -17,8 +17,15 @@
     "babel-preset-react": "^6.1.2",
     "babel-preset-stage-0": "^6.1.2",
     "babelify": "^7.2.0",
+    "express": "^4.13.3",
     "jquery": "^2.1.4",
     "react": "^0.14.2",
-    "react-dom": "^0.14.2"
+    "react-dom": "^0.14.2",
+    "react-redux": "^4.0.0",
+    "redux": "^3.0.4",
+    "request": "^2.66.0"
+  },
+  "devDependencies": {
+    "redux-devtools": "^2.1.5"
   }
 }
