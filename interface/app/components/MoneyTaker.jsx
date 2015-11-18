@@ -13,7 +13,6 @@ class MoneyTaker extends React.Component {
   }
 
   handleBuy() {
-    this.setState({value: 0});
     this.props.onBuyClick();
   }
 

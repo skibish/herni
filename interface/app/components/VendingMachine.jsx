@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import ItemList from './ItemList.jsx';
 import MoneyTaker from './MoneyTaker.jsx';
+import Message from './Message.jsx';
 import $ from 'jquery';
 
 class VendingMachine extends React.Component {
@@ -17,7 +18,8 @@ class VendingMachine extends React.Component {
     products: [],
     isBuyButtonEnabled: false,
     selectedItemId: 0,
-    activeCredit: 0
+    activeCredit: 0,
+    message: ''
 }
 
   // load product list
@@ -55,7 +57,7 @@ class VendingMachine extends React.Component {
       dataType: "json",
       contentType: "application/json; charset=utf-8",
       success: function (data) {
-        this.setState({activeCredit: data.credit})
+        this.setState({activeCredit: data.credit, message: data.result});
       }.bind(this)
     });
   }
@@ -80,6 +82,14 @@ class VendingMachine extends React.Component {
   }
 
   render() {
+    let text = this.state.message;
+    let messageBox = ' ';
+
+    if (text !== '') {
+      let style = (text == 'success') ? 'alert alert-success' : 'alert alert-warning';
+      messageBox = <Message message={text} classes={style} />;
+    }
+
     return (
       <div className="vendingMachine container-fluid">
         <div className="row">
@@ -92,6 +102,7 @@ class VendingMachine extends React.Component {
               activeCredit={this.state.activeCredit}
               onMoneyAddition={this.sendMoneyRequest}
               onBuyClick={this.handleBuyButtonClick} />
+              {messageBox}
           </div>
         </div>
       </div>
