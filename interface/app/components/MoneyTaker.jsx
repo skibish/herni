@@ -19,7 +19,7 @@ class MoneyTaker extends React.Component {
   render() {
     return (
       <div className="moneyTaker panel panel-default">
-        <div className="panel-heading">Input</div>
+        <div className="panel-heading">Cash Input</div>
         <div className="panel-body">
           <div className="input-group">
             <input type="text" className="form-control" value={this.props.activeCredit} readOnly/>

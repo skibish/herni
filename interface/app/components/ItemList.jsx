@@ -1,4 +1,5 @@
 import React from 'react';
+import Slot from './Slot.jsx';
 import Item from './Item.jsx';
 
 class ItemList extends React.Component {
@@ -8,8 +9,10 @@ class ItemList extends React.Component {
 
   render() {
     var itemNodes = this.props.products.map((product) => {
-      let isSelectable = (product.count > 0);
-      return (
+    let isSelectable = (product.count > 0);
+
+    return (
+      <Slot key={product.slot}>
         <Item
           key={product.slot}
           slot={product.slot}
@@ -18,9 +21,9 @@ class ItemList extends React.Component {
           count={product.count}
           isSelectable={isSelectable}
           onSelectClick={this.props.onItemSelection}
-          selectedItem={this.props.selectedItem}
-           />
-        );
+          selectedItem={this.props.selectedItem} />
+      </Slot>
+      );
     });
 
     return (

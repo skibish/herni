@@ -3,6 +3,7 @@ import ReactDom from 'react-dom';
 import ItemList from './ItemList.jsx';
 import MoneyTaker from './MoneyTaker.jsx';
 import Message from './Message.jsx';
+import Header from './Header.jsx';
 import $ from 'jquery';
 
 class VendingMachine extends React.Component {
@@ -92,6 +93,7 @@ class VendingMachine extends React.Component {
 
     return (
       <div className="vendingMachine container-fluid">
+        <Header />
         <div className="row">
           <div className="col-md-8">
             <ItemList products={this.state.products} onItemSelection={this.handleItemSelection} />
