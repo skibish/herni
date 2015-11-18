@@ -35,14 +35,35 @@ class PaymentHandlerServer(Resource, LogWrapper):
 
     def render(self, request):
         operations = ['POST', 'GET']
-        request.setHeader("content-type", "application/json")
         try:
             if re.match('/payment/?$', request.path):
-                if str(request.method).upper() != 'POST':
+                if str(request.method).upper() not in operations:
                     raise PaymentSvcException(errname='TechnicalError', errcode=3, message='Техническая ошибка.',
                                               description="Method %s is not allowed for this service." % request.method)
-                content = request.content.getvalue()
-                response = CreditCardPayment(content).make_payment()
+                if str(request.method).upper() == 'POST':
+                    content = request.content.getvalue()
+                    response = CreditCardPayment(content).make_payment()
+                else:
+                    request.setHeader('Content-Type', 'text/html')
+                    return '''<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Модуль payment cистемы продажи herni.</title>
+    <meta name="author" content="4501MV" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+        h1 { font-size: 14px; font-family: 'Segoe UI', Arial; color: #333366; }
+        body { font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Модуль обработки платёжных транзакций payment cистемы продажи herni.</h1>
+    <ol>
+        <li>Пример сообщения-запроса на выполнение платёжной транзакции:<br />
+        {'ccnum': '1234567891234567', 'pin': '1000', 'name': 'СНИКЕРС', 'description': 'payment for food', 'price': 12.35}</li>
+    </ol>
+</body>
+</html>'''
             else:
                 raise PaymentSvcException(errname='TechnicalError', errcode=7, message='Техническая ошибка.',
                                           description="The service does not exist." % request.path)
@@ -56,10 +77,11 @@ class PaymentHandlerServer(Resource, LogWrapper):
             response = {'success': False, 'error': 'TechnicalError',
                         'message': 'Техническая ошибка.', 'description': 'Please view log file'}
 
+        request.setHeader("content-type", "application/json")
+
         response_uni = json.dumps(response, ensure_ascii=False, encoding='utf8')
         response_utf = response_uni.encode('utf-8')
         return response_utf
-        # return unicode(json.dumps(response)).encode('utf-8')
 
 
 class GlobalContentReader(LogWrapper):
