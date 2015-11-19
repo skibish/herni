@@ -34,7 +34,8 @@ products = [{"name": "snickers",
 
 
 def refill_slot(url, data):
-    time.sleep(5)
+    print "Filling after some delay..."
+    time.sleep(10)
     print "Filling logic slot %d" % data['product']['slot']
     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
     r = requests.post(url, data=json.dumps(data), headers=headers)
