@@ -40,11 +40,12 @@ class VendingMachine extends React.Component {
     $.ajax({
       url: '/api/balance_refill',
       method: "POST",
-      data: JSON.stringify({credit: parseInt(amount)}),
+      data: JSON.stringify({credit: parseFloat(amount)}),
       dataType: "json",
       contentType: "application/json; charset=utf-8",
       success: function (data) {
-        this.setState({activeCredit: data.credit})
+        let credit = Math.round(data.credit * 100) / 100;
+        this.setState({activeCredit: credit})
       }.bind(this)
     });
   }
@@ -54,11 +55,12 @@ class VendingMachine extends React.Component {
     $.ajax({
       url: '/api/purchase',
       method: 'POST',
-      data: JSON.stringify({slot: this.state.selectedItemId}),
+      data: JSON.stringify({slot: this.state.selectedItemId, payment: 'cash', payment_details: {}}),
       dataType: "json",
       contentType: "application/json; charset=utf-8",
       success: function (data) {
-        this.setState({activeCredit: data.credit, message: data.result});
+        let credit = Math.round(data.credit * 100) / 100;
+        this.setState({activeCredit: credit, message: data.result});
       }.bind(this)
     });
   }

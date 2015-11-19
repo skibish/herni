@@ -351,17 +351,17 @@ var MoneyTaker = (function (_React$Component) {
               _react2.default.createElement(
                 "button",
                 { className: "coinFive btn btn-default", onClick: this.handleMoneyClick },
-                "5"
+                "0.5"
               ),
               _react2.default.createElement(
                 "button",
                 { className: "coinTen btn btn-default", onClick: this.handleMoneyClick },
-                "10"
+                "0.10"
               ),
               _react2.default.createElement(
                 "button",
                 { className: "coinTwenty btn btn-default", onClick: this.handleMoneyClick },
-                "20"
+                "0.20"
               ),
               _react2.default.createElement(
                 "button",
@@ -516,11 +516,12 @@ var VendingMachine = (function (_React$Component) {
       _jquery2.default.ajax({
         url: '/api/balance_refill',
         method: "POST",
-        data: JSON.stringify({ credit: parseInt(amount) }),
+        data: JSON.stringify({ credit: parseFloat(amount) }),
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: (function (data) {
-          this.setState({ activeCredit: data.credit });
+          var credit = Math.round(data.credit * 100) / 100;
+          this.setState({ activeCredit: credit });
         }).bind(this)
       });
     }
@@ -533,11 +534,12 @@ var VendingMachine = (function (_React$Component) {
       _jquery2.default.ajax({
         url: '/api/purchase',
         method: 'POST',
-        data: JSON.stringify({ slot: this.state.selectedItemId }),
+        data: JSON.stringify({ slot: this.state.selectedItemId, payment: 'cash', payment_details: {} }),
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: (function (data) {
-          this.setState({ activeCredit: data.credit, message: data.result });
+          var credit = Math.round(data.credit * 100) / 100;
+          this.setState({ activeCredit: credit, message: data.result });
         }).bind(this)
       });
     }
