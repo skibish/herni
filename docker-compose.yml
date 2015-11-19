@@ -7,7 +7,7 @@ logic:
   volumes:
     - ./logic:/app
   working_dir: /app
-  command: python logic.py -d
+  command: python logic.py
   links:
     - filler
 filler:
@@ -17,7 +17,7 @@ filler:
   volumes:
     - ./logic:/app
   working_dir: /app
-  command: python filler.py -d
+  command: python filler.py
 interface:
   build: ./config/docker/interface
   environment:
