@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import ItemList from './ItemList.jsx';
 import MoneyTaker from './MoneyTaker.jsx';
+import CreditCardTaker from './CreditCardTaker.jsx';
 import Message from './Message.jsx';
 import Header from './Header.jsx';
 import $ from 'jquery';
@@ -106,6 +107,7 @@ class VendingMachine extends React.Component {
               activeCredit={this.state.activeCredit}
               onMoneyAddition={this.sendMoneyRequest}
               onBuyClick={this.handleBuyButtonClick} />
+            <CreditCardTaker isBuyButtonEnabled={this.state.isBuyButtonEnabled} />
               {messageBox}
           </div>
         </div>
