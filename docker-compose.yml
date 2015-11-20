@@ -14,7 +14,7 @@ filler:
   expose:
     - "4568"
   volumes:
-    - ./logic:/app
+    - ./filler:/app
   working_dir: /app
   command: python filler.py
 charger:
