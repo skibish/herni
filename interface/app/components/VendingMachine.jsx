@@ -14,6 +14,9 @@ class VendingMachine extends React.Component {
     this.handleItemSelection = this.handleItemSelection.bind(this);
     this.sendMoneyRequest = this.sendMoneyRequest.bind(this);
     this.handleBuyButtonClick = this.handleBuyButtonClick.bind(this);
+    this.handlePayButtonClick = this.handlePayButtonClick.bind(this);
+    this.handleCreditCardInput = this.handleCreditCardInput.bind(this);
+    this.handlePinInput = this.handlePinInput.bind(this);
   }
 
   state = {
@@ -21,7 +24,9 @@ class VendingMachine extends React.Component {
     isBuyButtonEnabled: false,
     selectedItemId: 0,
     activeCredit: 0,
-    message: ''
+    message: '',
+    ccnum: '',
+    pin: ''
 }
 
   // load product list
@@ -66,6 +71,21 @@ class VendingMachine extends React.Component {
     });
   }
 
+  // purchase something
+  purchaseItemWithCreditCardRequest() {
+    $.ajax({
+      url: '/api/purchase',
+      method: 'POST',
+      data: JSON.stringify({slot: this.state.selectedItemId, payment: 'card', payment_details: {ccnum: parseInt(this.state.ccnum), pin: parseInt(this.state.pin)}}),
+      dataType: "json",
+      contentType: "application/json; charset=utf-8",
+      success: function (data) {
+        let credit = Math.round(data.credit * 100) / 100;
+        this.setState({activeCredit: credit, message: data.result});
+      }.bind(this)
+    });
+  }
+
   // when component is loaded, get product list
   componentDidMount() {
     this.loadProductListRequest();
@@ -80,6 +100,23 @@ class VendingMachine extends React.Component {
   handleBuyButtonClick() {
     // after purchase, download product list
     $.when(this.purchaseItemRequest()).then(() => {
+      this.loadProductListRequest();
+    });
+    this.setState({isBuyButtonEnabled: false});
+  }
+
+  handleCreditCardInput(event) {
+    this.setState({ccnum: event.target.value})
+  }
+
+  handlePinInput(event) {
+    this.setState({pin: event.target.value})
+  }
+
+  // after purchase with cc, disable button
+  handlePayButtonClick() {
+    // after purchase, download product list
+    $.when(this.purchaseItemWithCreditCardRequest()).then(() => {
       this.loadProductListRequest();
     });
     this.setState({isBuyButtonEnabled: false});
@@ -107,8 +144,14 @@ class VendingMachine extends React.Component {
               activeCredit={this.state.activeCredit}
               onMoneyAddition={this.sendMoneyRequest}
               onBuyClick={this.handleBuyButtonClick} />
-            <CreditCardTaker isBuyButtonEnabled={this.state.isBuyButtonEnabled} />
-              {messageBox}
+            <CreditCardTaker
+              isBuyButtonEnabled={this.state.isBuyButtonEnabled}
+              ccnum={this.state.ccnum}
+              pin={this.state.pin}
+              onCrediCardChange={this.handleCreditCardInput}
+              onPinChange={this.handlePinInput}
+              onPayClick={this.handlePayButtonClick} />
+            {messageBox}
           </div>
         </div>
       </div>

@@ -50,6 +50,7 @@ var CreditCardTaker = (function (_React$Component) {
   _createClass(CreditCardTaker, [{
     key: 'render',
     value: function render() {
+      var _this2 = this;
 
       var inlineStyle = { marginBottom: '10px' };
 
@@ -67,7 +68,7 @@ var CreditCardTaker = (function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'input-group', style: inlineStyle },
-            _react2.default.createElement('input', { type: 'text', className: 'form-control' }),
+            _react2.default.createElement('input', { type: 'text', className: 'form-control', onChange: this.props.onCrediCardChange }),
             _react2.default.createElement(
               'span',
               { className: 'input-group-addon' },
@@ -77,7 +78,7 @@ var CreditCardTaker = (function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'input-group', style: inlineStyle },
-            _react2.default.createElement('input', { type: 'text', className: 'form-control' }),
+            _react2.default.createElement('input', { type: 'text', className: 'form-control', onChange: this.props.onPinChange }),
             _react2.default.createElement(
               'span',
               { className: 'input-group-addon' },
@@ -86,8 +87,10 @@ var CreditCardTaker = (function (_React$Component) {
           ),
           _react2.default.createElement(
             'button',
-            { className: 'submitMoney btn btn-success', disabled: !this.props.isBuyButtonEnabled },
-            'Buy!'
+            { className: 'pay btn btn-success', disabled: !this.props.isBuyButtonEnabled, onClick: function onClick() {
+                return _this2.props.onPayClick();
+              } },
+            'Pay!'
           )
         )
       );
@@ -570,12 +573,17 @@ var VendingMachine = (function (_React$Component) {
       isBuyButtonEnabled: false,
       selectedItemId: 0,
       activeCredit: 0,
-      message: ''
+      message: '',
+      ccnum: '',
+      pin: ''
     };
 
     _this.handleItemSelection = _this.handleItemSelection.bind(_this);
     _this.sendMoneyRequest = _this.sendMoneyRequest.bind(_this);
     _this.handleBuyButtonClick = _this.handleBuyButtonClick.bind(_this);
+    _this.handlePayButtonClick = _this.handlePayButtonClick.bind(_this);
+    _this.handleCreditCardInput = _this.handleCreditCardInput.bind(_this);
+    _this.handlePinInput = _this.handlePinInput.bind(_this);
     return _this;
   }
 
@@ -630,6 +638,24 @@ var VendingMachine = (function (_React$Component) {
       });
     }
 
+    // purchase something
+
+  }, {
+    key: 'purchaseItemWithCreditCardRequest',
+    value: function purchaseItemWithCreditCardRequest() {
+      _jquery2.default.ajax({
+        url: '/api/purchase',
+        method: 'POST',
+        data: JSON.stringify({ slot: this.state.selectedItemId, payment: 'card', payment_details: { ccnum: parseInt(this.state.ccnum), pin: parseInt(this.state.pin) } }),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: (function (data) {
+          var credit = Math.round(data.credit * 100) / 100;
+          this.setState({ activeCredit: credit, message: data.result });
+        }).bind(this)
+      });
+    }
+
     // when component is loaded, get product list
 
   }, {
@@ -656,6 +682,30 @@ var VendingMachine = (function (_React$Component) {
       // after purchase, download product list
       _jquery2.default.when(this.purchaseItemRequest()).then(function () {
         _this2.loadProductListRequest();
+      });
+      this.setState({ isBuyButtonEnabled: false });
+    }
+  }, {
+    key: 'handleCreditCardInput',
+    value: function handleCreditCardInput(event) {
+      this.setState({ ccnum: event.target.value });
+    }
+  }, {
+    key: 'handlePinInput',
+    value: function handlePinInput(event) {
+      this.setState({ pin: event.target.value });
+    }
+
+    // after purchase with cc, disable button
+
+  }, {
+    key: 'handlePayButtonClick',
+    value: function handlePayButtonClick() {
+      var _this3 = this;
+
+      // after purchase, download product list
+      _jquery2.default.when(this.purchaseItemWithCreditCardRequest()).then(function () {
+        _this3.loadProductListRequest();
       });
       this.setState({ isBuyButtonEnabled: false });
     }
@@ -690,7 +740,13 @@ var VendingMachine = (function (_React$Component) {
               activeCredit: this.state.activeCredit,
               onMoneyAddition: this.sendMoneyRequest,
               onBuyClick: this.handleBuyButtonClick }),
-            _react2.default.createElement(_CreditCardTaker2.default, { isBuyButtonEnabled: this.state.isBuyButtonEnabled }),
+            _react2.default.createElement(_CreditCardTaker2.default, {
+              isBuyButtonEnabled: this.state.isBuyButtonEnabled,
+              ccnum: this.state.ccnum,
+              pin: this.state.pin,
+              onCrediCardChange: this.handleCreditCardInput,
+              onPinChange: this.handlePinInput,
+              onPayClick: this.handlePayButtonClick }),
             messageBox
           )
         )

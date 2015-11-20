@@ -15,14 +15,14 @@ class CreditCardTaker extends React.Component {
         <div className="panel-heading">Credit Card Input</div>
         <div className="panel-body">
           <div className="input-group" style={inlineStyle}>
-            <input type="text" className="form-control"/>
+            <input type="text" className="form-control" onChange={this.props.onCrediCardChange} />
             <span className="input-group-addon">CC</span>
           </div>
           <div className="input-group" style={inlineStyle}>
-            <input type="text" className="form-control"/>
+            <input type="text" className="form-control" onChange={this.props.onPinChange} />
             <span className="input-group-addon">PIN</span>
           </div>
-          <button className="submitMoney btn btn-success" disabled={!this.props.isBuyButtonEnabled}>Buy!</button>
+          <button className="pay btn btn-success" disabled={!this.props.isBuyButtonEnabled} onClick={() => this.props.onPayClick()}>Pay!</button>
         </div>
       </div>
     );

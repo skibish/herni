@@ -198,8 +198,8 @@ class RestServer:
                 print "Balance is too low"
                 res = 'low balance'
         elif data['payment'] == 'card':
-            card_num = data['payment_details']['ccnum']
-            pin = data['payment_details']['pin']
+            card_num = str(data['payment_details']['ccnum'])
+            pin = str(data['payment_details']['pin'])
             req = {"ccnum": card_num,
                    "pin": pin,
                    "name": slots[slot].get_name(),
