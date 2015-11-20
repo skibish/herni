@@ -24,9 +24,9 @@ class MoneyTaker extends React.Component {
           <div className="input-group">
             <input type="text" className="form-control" value={this.props.activeCredit} readOnly/>
             <div className="input-group-btn">
-              <button className="coinFive btn btn-default" onClick={this.handleMoneyClick}>5</button>
-              <button className="coinTen btn btn-default" onClick={this.handleMoneyClick}>10</button>
-              <button className="coinTwenty btn btn-default" onClick={this.handleMoneyClick}>20</button>
+              <button className="coinFive btn btn-default" onClick={this.handleMoneyClick}>0.5</button>
+              <button className="coinTen btn btn-default" onClick={this.handleMoneyClick}>0.10</button>
+              <button className="coinTwenty btn btn-default" onClick={this.handleMoneyClick}>0.20</button>
               <button className="submitMoney btn btn-success" disabled={!this.props.isBuyButtonEnabled} onClick={this.handleBuy}>Buy!</button>
             </div>
           </div>

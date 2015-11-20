@@ -2,14 +2,13 @@ logic:
   build: ./config/docker/logic
   expose:
     - "4567"
-  ports:
-    - 8081:4567
   volumes:
     - ./logic:/app
   working_dir: /app
-  command: python logic.py -d
+  command: python logic.py
   links:
     - filler
+    - charger
 filler:
   build: ./config/docker/logic
   expose:
@@ -17,11 +16,21 @@ filler:
   volumes:
     - ./logic:/app
   working_dir: /app
-  command: python filler.py -d
+  command: python filler.py
+charger:
+  build: ./config/docker/charger
+  expose:
+    - "6082"
+  volumes:
+    - ./charger:/app
+  working_dir: /app
+  command: python payment_svc.py
 interface:
   build: ./config/docker/interface
   environment:
     - LOGIC_URL=http://logic:4567
+    - CHARGER_URL=http://charger:6082
+    - FILLER_URL=http://filler:4568
     - PORT=8080
   expose:
     - "8080"

@@ -8,6 +8,7 @@ slots = []
 slot_count = 12
 slot_capacity = 10
 filler_url = ""
+charger_url = ""
 session = None
 
 
@@ -39,6 +40,9 @@ class Slot:
 
     def get_price(self):
         return self.product.price
+
+    def get_name(self):
+        return self.product.name
 
     def issue(self):
         if self.used_slots == 0:
@@ -96,19 +100,21 @@ class RestServer:
         global slot_count
         global slot_capacity
         global filler_url
+        global charger_url
         print "Initializing..."
         session = Session()
         for i in range(0, slot_count):
             slots.append(Slot(i, slot_capacity))
         data = request.get_json(silent=True)
         filler_url = data['filler_url']
+        charger_url = data['charger_url']
         url = filler_url + '/initial_fill'
         data = {'slots': slot_count, 'capacity': slot_capacity}
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
         print "Requesting product list from Filler"
         r = requests.post(url, data=json.dumps(data), headers=headers)
         if r.status_code != 200:
-            return "Filler returned %d" % r.status_code, r.status_code
+            return "Filler returned %d" % r.status_code
         resp = json.loads(r.text)
         for item in resp['products']:
             p = Product(item['id'], item['name'], item['price'])
@@ -179,16 +185,40 @@ class RestServer:
         if data['slot'] >= slot_count:
             print "Bad slot number. Expected 0 - %d" % slot_count
             return "Bad slot"
+        slot = data['slot']
         res = 'fail'
-        price = slots[data['slot']].get_price()
-        if session.get_balance() >= price:
-            if slots[data['slot']].issue() and session.pay(price):
-                res = 'success'
+        if data['payment'] == 'cash':
+            price = slots[slot].get_price()
+            if session.get_balance() >= price:
+                if slots[slot].issue() and session.pay(price):
+                    res = 'success'
+                else:
+                    print "Purchase issuing failed"
             else:
-                print "Purchase issuing failed"
-        else:
-            print "Balance is too low"
-            res = 'low balance'
+                print "Balance is too low"
+                res = 'low balance'
+        elif data['payment'] == 'card':
+            card_num = str(data['payment_details']['ccnum'])
+            pin = str(data['payment_details']['pin'])
+            req = {"ccnum": card_num,
+                   "pin": pin,
+                   "name": slots[slot].get_name(),
+                   "description": "payment for food",
+                   "price": slots[slot].get_price()}
+            url = charger_url + "/payment"
+            headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+            r = requests.post(url, data=json.dumps(req), headers=headers)
+            if r.status_code != 200:
+                return "Charger returned %d" % r.status_code
+            resp = json.loads(r.text)
+            if resp['success']:
+                if slots[slot].issue():
+                    res = 'success'
+                else:
+                    print "Purchase issuing failed"
+            else:
+                print "Card payment failed"
+
         result = {"result": res, "credit": session.get_balance()}
         return json.dumps(result)
 
