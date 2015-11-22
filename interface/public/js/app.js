@@ -31,12 +31,21 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+/**
+ * Request products action
+ * @return {object} plain object with action type
+ */
 function requestProducts() {
   return {
     type: types.REQUEST_PRODUCTS
   };
 }
 
+/**
+ * Receive products action
+ * @param  {object} json JSON with product list
+ * @return {object}      plain object with type and product list
+ */
 function receiveProducts(json) {
   return {
     type: types.RECEIVE_PRODUCTS,
@@ -44,6 +53,10 @@ function receiveProducts(json) {
   };
 }
 
+/**
+ * Fetch list of products action
+ * @return {promise} after ajax call
+ */
 function fetchProducts() {
   return function (dispatch) {
     dispatch(requestProducts());
@@ -58,6 +71,11 @@ function fetchProducts() {
   };
 }
 
+/**
+ * Select item action
+ * @param  {integer} id selected item identifier
+ * @return {object}    plain object with action type and id
+ */
 function selectItem(id) {
   return {
     type: types.SELECT_ITEM,
@@ -65,18 +83,31 @@ function selectItem(id) {
   };
 }
 
+/**
+ * Enable *buy* button action
+ * @return {object} plain object with action type
+ */
 function enableBuyButton() {
   return {
     type: types.ENABLE_BUY_BUTTON
   };
 }
 
+/**
+ * Disable *buy* button action
+ * @return {object} plain object with action type
+ */
 function disableBuyButton() {
   return {
     type: types.DISABLE_BUY_BUTTON
   };
 }
 
+/**
+ * Send cash action
+ * @param  {float} amount amount to send into vendig machine
+ * @return {object}        plain object with action type and amount
+ */
 function sendCash(amount) {
   return {
     type: types.SEND_CASH,
@@ -84,6 +115,11 @@ function sendCash(amount) {
   };
 }
 
+/**
+ * Receive cash action
+ * @param  {float} amount received amount
+ * @return {object}        plain object with action type and amount
+ */
 function receiveCash(amount) {
   return {
     type: types.RECEIVE_CASH,
@@ -91,6 +127,11 @@ function receiveCash(amount) {
   };
 }
 
+/**
+ * Request cash action
+ * @param  {float} amount cash to send in to vending machine
+ * @return {promise}        after ajax call
+ */
 function requestCash(amount) {
   return function (dispatch) {
     dispatch(sendCash(amount));
@@ -107,6 +148,11 @@ function requestCash(amount) {
   };
 }
 
+/**
+ * Receive message action
+ * @param  {string} message received message from ajax call or something else to display
+ * @return {object}         plain object with action type and message
+ */
 function receiveMessage(message) {
   return {
     type: types.RECEIVE_MESSAGE,
@@ -114,12 +160,23 @@ function receiveMessage(message) {
   };
 }
 
+/**
+ * But selected item action
+ * @return {object} plain object with action type
+ */
 function buySelectedItem() {
   return {
     type: types.BUY_SELECTED_ITEM
   };
 }
 
+/**
+ * Purchase request action
+ * @param  {integer} id             identifier of selected item
+ * @param  {string} type           =             'cash' type of transaction to hold
+ * @param  {object} paymentDetails =             {}     additional data for sucessful transactions
+ * @return {promise}                from ajax request
+ */
 function requestBuy(id) {
   var type = arguments.length <= 1 || arguments[1] === undefined ? 'cash' : arguments[1];
   var paymentDetails = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -143,6 +200,11 @@ function requestBuy(id) {
   };
 }
 
+/**
+ * Add credit card action
+ * @param  {string} ccnum credit card number
+ * @return {object}      plain object with action type and credit card number
+ */
 function addCreditCard(ccnum) {
   return {
     type: types.ADD_CREDIT_CARD,
@@ -150,6 +212,11 @@ function addCreditCard(ccnum) {
   };
 }
 
+/**
+ * Add card PIN action
+ * @param  {string} pin pin of credit card
+ * @return {object}     plain object with action type and card PIN
+ */
 function addCardPin(pin) {
   return {
     type: types.ADD_CARD_PIN,
@@ -937,6 +1004,12 @@ var types = _interopRequireWildcard(_ActionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+/**
+ * Products reducer which is responsible to store product list
+ * @param  {array} state  =             [] list of products
+ * @param  {object} action action object
+ * @return {array}        return list of products to state
+ */
 function products() {
   var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
   var action = arguments[1];
@@ -949,6 +1022,12 @@ function products() {
   }
 }
 
+/**
+ * Selected item id reducer which is responsible to store selected item id
+ * @param  {integer} state  =             0 identifier of the seleceted item
+ * @param  {object} action action object
+ * @return {integer}        return selected item identifier
+ */
 function selectedItemId() {
   var state = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
   var action = arguments[1];
@@ -961,6 +1040,12 @@ function selectedItemId() {
   }
 }
 
+/**
+ * Reducer that stores the state of buy button
+ * @param  {boolean}  state  =             false store button state
+ * @param  {object}  action action object
+ * @return {boolean}        return state of buy button
+ */
 function isBuyButtonEnabled() {
   var state = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
   var action = arguments[1];
@@ -975,6 +1060,12 @@ function isBuyButtonEnabled() {
   }
 }
 
+/**
+ * Reducer that store active credit amount
+ * @param  {float} state  =             0 cash amount
+ * @param  {object} action action object
+ * @return {float}        return actual amount of credit
+ */
 function activeCredit() {
   var state = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
   var action = arguments[1];
@@ -987,6 +1078,12 @@ function activeCredit() {
   }
 }
 
+/**
+ * Reducer that store message
+ * @param  {string} state  =             '' message body
+ * @param  {object} action action object
+ * @return {string}        return message string
+ */
 function message() {
   var state = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
   var action = arguments[1];
@@ -999,6 +1096,12 @@ function message() {
   }
 }
 
+/**
+ * Reducer that store credit card number
+ * @param  {string} state  =             '' credit card number
+ * @param  {object} action action object
+ * @return {string}        return credit card number
+ */
 function ccnum() {
   var state = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
   var action = arguments[1];
@@ -1011,6 +1114,12 @@ function ccnum() {
   }
 }
 
+/**
+ * Reducer that is responsible to store PIN number
+ * @param  {string} state  =             '' credit card PIN number
+ * @param  {object} action action object
+ * @return {string}        return PIN
+ */
 function pin() {
   var state = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
   var action = arguments[1];
@@ -1059,6 +1168,7 @@ var _reducers2 = _interopRequireDefault(_reducers);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// here we are configuring our store with  some middleware
 var createStoreWithMiddleware = (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _reduxLogger2.default)())(_redux.createStore);
 
 function configureStore(initialState) {
