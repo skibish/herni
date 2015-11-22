@@ -1,4 +1,5 @@
 import * as types from '../constants/ActionTypes.js';
+import $ from 'jquery';
 
 export function requestProducts() {
   return {
@@ -22,7 +23,6 @@ export function fetchProducts() {
       cache: false,
       success: function (data) {
         dispatch(receiveProducts(data));
-        return true;
       }
     });
   }
@@ -55,8 +55,10 @@ export function sendCash(amount) {
 }
 
 export function receiveCash(amount) {
-  type: types.RECEIVE_CASH,
-  amount
+  return {
+    type: types.RECEIVE_CASH,
+    amount
+  }
 }
 
 export function requestCash(amount) {
@@ -75,16 +77,17 @@ export function requestCash(amount) {
   }
 }
 
-export function receiveMessage(mesage) {
+export function receiveMessage(message) {
   return {
     type: types.RECEIVE_MESSAGE,
     message
   };
 }
 
-export function buySelectedItem(id) {
-  type: BUY_SELECTED_ITEM,
-  id
+export function buySelectedItem() {
+  return {
+    type: types.BUY_SELECTED_ITEM
+  };
 }
 
 export function requestBuy(id, type = 'cash', paymentDetails = {}) {
@@ -93,7 +96,7 @@ export function requestBuy(id, type = 'cash', paymentDetails = {}) {
     return $.ajax({
       url: '/api/purchase',
       method: 'POST',
-      data: JSON.stringify({slot: id, payment: type, payment_details: paymentDetails),
+      data: JSON.stringify({slot: id, payment: type, payment_details: paymentDetails}),
       dataType: "json",
       contentType: "application/json; charset=utf-8",
       success: function (data) {
@@ -108,11 +111,15 @@ export function requestBuy(id, type = 'cash', paymentDetails = {}) {
 }
 
 export function addCreditCard(ccnum) {
-  type: types.ADD_CREDIT_CARD,
-  ccnum
+  return {
+    type: types.ADD_CREDIT_CARD,
+    ccnum
+  };
 }
 
 export function addCardPin(pin) {
-  type: types.ADD_CARD_PIN,
-  pin
+  return {
+    type: types.ADD_CARD_PIN,
+    pin
+  };
 }
