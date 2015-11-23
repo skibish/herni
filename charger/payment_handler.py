@@ -71,7 +71,7 @@ class PaymentHandlerServer(Resource, LogWrapper):
         except PaymentSvcException as e:
             self.log_trace_back()
             response = {'success': False, 'error': e.errname, 'message': e.message, 'description': e.description}
-            request.setResponseCode(http.NOT_ALLOWED)
+            # request.setResponseCode(http.NOT_ALLOWED)
         except:
             self.log_trace_back()
             response = {'success': False, 'error': 'TechnicalError',

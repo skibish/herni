@@ -215,9 +215,9 @@ class RestServer:
                 if slots[slot].issue():
                     res = 'success'
                 else:
-                    print "Purchase issuing failed"
+                    res = "Purchase issuing failed"
             else:
-                print "Card payment failed"
+                res = resp['message']
 
         result = {"result": res, "credit": session.get_balance()}
         return json.dumps(result)
