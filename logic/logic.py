@@ -29,8 +29,6 @@ class Slot:
         self.product = None
 
     def fill(self, product, qty):
-        if self.used_slots != 0:
-            return 0
         self.product = product
         if qty > self.capacity:
             self.used_slots = self.capacity
