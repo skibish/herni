@@ -41,10 +41,10 @@ class TestRestMethods(unittest.TestCase):
     def test_charger_availability(self):
         import requests
         r = requests.get('http://127.0.0.1:6082/payment/')
+        self.assertEqual(r.status_code, 200)
 
         with open('payment_index.html', 'r') as f:
             s = f.read()
-
         self.assertEqual(s, r.content)
 
     def test_charger_payment_request(self):
@@ -61,9 +61,9 @@ class TestRestMethods(unittest.TestCase):
         data = json.dumps(values, ensure_ascii=False, encoding='utf8')
 
         r = requests.post(url, data.encode('utf-8'), {'content-type': 'application/json'})
+        self.assertEqual(r.status_code, 200)
 
         res = json.loads(r.content)
-
         self.assertEqual(res['success'], True)
 
     def test_charger_transaction_log(self):
