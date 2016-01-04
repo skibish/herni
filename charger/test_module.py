@@ -6,7 +6,7 @@ import unittest
 
 
 class TestRestMethods(unittest.TestCase):
-    def test_conf_settings(self):
+    def test_charger_settings(self):
         import payment_svc
         import payment_svc_exception
 
@@ -38,9 +38,16 @@ class TestRestMethods(unittest.TestCase):
         the_exception = cm.exception
         self.assertEqual(the_exception.errcode, 2)
 
-        self.assertEqual('foo'.upper(), 'FOO')
+    def test_charger_availability(self):
+        import requests
+        r = requests.get('http://127.0.0.1:6082/payment/')
+        self.assertEqual(r.status_code, 200)
 
-    def test_payment_request(self):
+        with open('payment_index.html', 'r') as f:
+            s = f.read()
+        self.assertEqual(s, r.content)
+
+    def test_charger_payment_request(self):
         import requests
         import json
 
@@ -49,16 +56,34 @@ class TestRestMethods(unittest.TestCase):
                   'pin': '1000',
                   'name': 'СНИКЕРС',
                   'description': 'payment for food',
-                  'price': 12.35}
-
-        r = requests.get(url)
+                  'price': 2.35}
 
         data = json.dumps(values, ensure_ascii=False, encoding='utf8')
+
         r = requests.post(url, data.encode('utf-8'), {'content-type': 'application/json'})
+        self.assertEqual(r.status_code, 200)
 
+        res = json.loads(r.content)
+        self.assertEqual(res['success'], True)
 
-        self.assertEqual('foo'.upper(), 'FOO')
+    def test_charger_transaction_log(self):
+        import payment_transaction_log
+        import os
+        payment_transaction_log.PaymentTransactionLog.log_transaction('test_log_transaction.log', '0000000000000000',
+                                                                      100.23, 'test', 'test')
 
+        with open('test_log_transaction.log', 'r') as f:
+            s = f.read()
+
+        os.remove('test_log_transaction.log')
+
+        self.assertEqual(s[22:], "0000, 100.23, test, test\n")
 
 if __name__ == "__main__":
     unittest.main()
+
+
+
+
+
+    #self.assertEqual('foo'.upper(), 'FOO')
