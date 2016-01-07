@@ -8,29 +8,29 @@ app = Flask(__name__)
 
 logic_port = "4567"
 products = [{"name": "snickers",
-             "price": 80},
+             "price": 0.80},
             {"name": "cola",
-             "price": 100},
+             "price": 0.100},
             {"name": "water",
-             "price": 75},
+             "price": 0.75},
             {"name": "orange juice",
-             "price": 100},
+             "price": 0.100},
             {"name": "unknown juice",
-             "price": 65},
+             "price": 0.65},
             {"name": "milk",
-             "price": 85},
+             "price": 0.85},
             {"name": "Semki",
-             "price": 77},
+             "price": 0.77},
             {"name": "nuts",
-             "price": 120},
+             "price": 0.120},
             {"name": "waffels",
-             "price": 110},
+             "price": 0.110},
             {"name": "banana",
-             "price": 25},
+             "price": 0.25},
             {"name": "potato",
-             "price": 50},
+             "price": 0.50},
             {"name": "poison",
-             "price": 45}]
+             "price": 0.45}]
 
 class Singleton:
 
