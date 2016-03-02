@@ -9,9 +9,7 @@ var app = express();
 
 var options = {
   method: 'POST',
-  url: apiServerHost + '/init',
-  body: {filler_url: fillerUrl, charger_url: chargerUrl},
-  json: true
+  url: apiServerHost + '/init'
 };
 
 // vending machine initialization

@@ -6,6 +6,9 @@ logic:
     - ./logic:/app
   working_dir: /app
   command: python logic.py
+  environment:
+    - CHARGER_URL=http://charger:6082
+    - FILLER_URL=http://filler:4568
   links:
     - filler
     - charger

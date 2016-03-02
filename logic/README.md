@@ -11,19 +11,17 @@ To run it, you will need:
 
 Start it with `python logic.py` and it will listen for requests on port `4567`
 
+## Environment variables
+
+Expecting two environment variables:
+ - FILLER_URL (url of filler microservice, default value: http://localhost:4568)
+ - CHARGER_URL (url of charger microservice, default value: http://localhost:6082)
+
 ## Routes
 
 ### POST /init
 
-Initally vending machine is empty. This request will initialize it.
-
-Body request:
-```json
-{
-  "filler_url": "http://filler:4568",
-  "charger_url": "http://changer:6082"
-}
-```
+Initially vending machine is empty. This request will initialize it.
 
 Body response:
 ```
