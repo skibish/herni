@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 from flask import Flask, request
@@ -7,8 +8,8 @@ app = Flask(__name__)
 slots = []
 slot_count = 12
 slot_capacity = 10
-filler_url = ""
-charger_url = ""
+filler_url = os.getenv('FILLER_URL', 'http://localhost:4568')
+charger_url = os.getenv('CHARGER_URL', 'http://localhost:6082')
 session = None
 
 
@@ -110,7 +111,6 @@ class RestServer:
         pass
 
     # UI
-    # {"filler_url": "http://127.0.0.1:4568"}
     @staticmethod
     @app.route('/init', methods=['POST'])
     def init():
@@ -124,8 +124,6 @@ class RestServer:
         for i in range(0, slot_count):
             slots.append(Slot(i, slot_capacity))
         data = request.get_json(silent=True)
-        filler_url = data['filler_url']
-        charger_url = data['charger_url']
         url = filler_url + '/initial_fill'
         data = {'slots': slot_count, 'capacity': slot_capacity}
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
