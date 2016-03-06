@@ -24,13 +24,13 @@ filler:
     - LOGIC_PORT=4567
   entrypoint: /app/entrypoint.sh
 charger:
-  build: ./config/docker/charger
+  image: php
   expose:
     - "6082"
   volumes:
     - ./charger:/app
-  working_dir: /app
-  command: python payment_svc.py
+  working_dir: /app/public
+  command: php -S 0.0.0.0:6082
 interface:
   build: ./config/docker/interface
   environment:
