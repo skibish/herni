@@ -2,8 +2,6 @@ var express = require('express');
 var request = require('request');
 
 var apiServerHost = process.env.LOGIC_URL;
-var chargerUrl = process.env.CHARGER_URL;
-var fillerUrl = process.env.FILLER_URL
 
 var app = express();
 

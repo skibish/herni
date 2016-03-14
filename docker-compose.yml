@@ -37,8 +37,6 @@ services:
     build: ./config/docker/interface
     environment:
       - LOGIC_URL=http://logic:4567
-      - CHARGER_URL=http://charger:6082
-      - FILLER_URL=http://filler:4568
       - PORT=8080
     expose:
       - "8080"
