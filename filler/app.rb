@@ -5,56 +5,7 @@ set :port, ENV['PORT'] || 9494
 set :bind, '0.0.0.0'
 logic_port = ENV['LOGIC_PORT'] || 4567
 
-products = [
-  {
-    name: "snickers",
-    price: 0.80
-  },
-  {
-    name: "cola",
-    price: 1.00
-  },
-  {
-    name: "water",
-    price: 0.75
-  },
-  {
-    name: "orange juice",
-    price: 1.00
-  },
-  {
-    name: "unknown juice",
-    price: 0.65
-  },
-  {
-    name: "milk",
-    price: 0.85
-  },
-  {
-    name: "Semki",
-    price: 0.77
-  },
-  {
-    name: "nuts",
-    price: 1.20
-  },
-  {
-    name: "waffels",
-    price: 1.10
-  },
-  {
-    name: "banana",
-    price: 0.25
-  },
-  {
-    name: "potato",
-    price: 0.50
-  },
-  {
-    name: "poison",
-    price: 0.45
-  }
-]
+products = JSON.parse(File.read('./storage/products.json'))
 
 post '/initial_fill' do
   content_type :json
@@ -71,8 +22,8 @@ post '/initial_fill' do
 
     product_list.push({
       id: index,
-      name: products[index][:name],
-      price: products[index][:price],
+      name: products[index]["name"],
+      price: products[index]["price"],
       slot: i,
       count: capacity
     })
@@ -95,8 +46,8 @@ post '/empty' do
   d = {
     product: {
       id: index,
-      name: products[index][:name],
-      price: products[index][:price],
+      name: products[index]["name"],
+      price: products[index]["price"],
       slot: data['slot'],
       count: data['capacity']
     }
