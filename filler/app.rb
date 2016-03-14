@@ -12,8 +12,8 @@ post '/initial_fill' do
 
   # get JSON from body
   data = JSON.parse(request.body.read.to_s)
-  slots = data["slots"]
-  capacity = data["capacity"]
+  slots = data['slots']
+  capacity = data['capacity']
   product_list = []
 
   # create list of products
@@ -22,8 +22,8 @@ post '/initial_fill' do
 
     product_list.push({
       id: index,
-      name: products[index]["name"],
-      price: products[index]["price"],
+      name: products[index]['name'],
+      price: products[index]['price'],
       slot: i,
       count: capacity
     })
@@ -46,14 +46,12 @@ post '/empty' do
   d = {
     product: {
       id: index,
-      name: products[index]["name"],
-      price: products[index]["price"],
+      name: products[index]['name'],
+      price: products[index]['price'],
       slot: data['slot'],
       count: data['capacity']
     }
   }
-
-  # {product: {id: 1, name: "twix", price: 1.00, slot: 1, count: 10 }}
 
   clnt.post_async(url, d.to_json, {'Content-Type' => 'application/json'})
 
