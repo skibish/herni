@@ -52,8 +52,18 @@ class Slot:
             data = {'slot': self.number, 'capacity': self.capacity, 'product_id': self.product.product_id}
             headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
             r = requests.post(url, data=json.dumps(data), headers=headers)
+
             if r.status_code != 200:
                 raise Exception("Filler returned %d" % r.status_code)
+
+            data = json.loads(r.text)
+            data = data['product']
+            p = Product(data['id'], data['name'], data['price'])
+            slot_num = data['slot']
+            count = data['count']
+            slots[slot_num].fill(p, count)
+
+            print 'Refilled %d %s to slot %d' % (count, data['name'], slot_num)
         return True
 
     def to_dict(self):
@@ -237,19 +247,6 @@ class RestServer:
 
         result = {"result": res, "credit": session.get_balance()}
         return json.dumps(result)
-
-    # Filler
-    @staticmethod
-    @app.route('/slot_refill', methods=['POST'])
-    def slot_refill():
-        data = request.get_json(silent=True)
-        data = data['product']
-        p = Product(data['id'], data['name'], data['price'])
-        slot_num = data['slot']
-        count = data['count']
-        slots[slot_num].fill(p, count)
-        print 'Refilled %d %s to slot %d' % (count, data['name'], slot_num)
-        return ""
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4567)

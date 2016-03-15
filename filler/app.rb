@@ -35,6 +35,9 @@ post '/initial_fill' do
 end
 
 post '/empty' do
+  # doing heavy filting here
+  sleep(5)
+
   content_type :json
   clnt = HTTPClient.new
 
@@ -43,7 +46,8 @@ post '/empty' do
 
   url = "http://#{request.ip}:#{logic_port}/slot_refill"
   index = data['product_id']
-  d = {
+
+  {
     product: {
       id: index,
       name: products[index]['name'],
@@ -51,10 +55,6 @@ post '/empty' do
       slot: data['slot'],
       count: data['capacity']
     }
-  }
-
-  clnt.post_async(url, d.to_json, {'Content-Type' => 'application/json'})
-
-  {}.to_json
+  }.to_json
 
 end
