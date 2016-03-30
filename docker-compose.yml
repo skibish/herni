@@ -33,13 +33,7 @@ services:
       - backend
 
   charger:
-    image: php
-    expose:
-      - "6082"
-    volumes:
-      - ./charger:/app
-    working_dir: /app/public
-    command: php -S 0.0.0.0:6082
+    build: ./charger
     networks:
       - backend
 
