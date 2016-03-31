@@ -20,18 +20,9 @@ services:
       - backend
 
   interface:
-    build: ./config/docker/interface
-    environment:
-      - LOGIC_URL=http://logic:4567
-      - PORT=8080
-    expose:
-      - "8080"
+    build: ./interface
     ports:
       - 8080:8080
-    volumes:
-      - ./interface:/app
-    working_dir: /app
-    entrypoint: /root/entrypoint.sh
     depends_on:
       - logic
     networks:
