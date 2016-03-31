@@ -1,16 +1,7 @@
 version: '2'
 services:
   logic:
-    build: ./config/docker/logic
-    expose:
-      - "4567"
-    volumes:
-      - ./logic:/app
-    working_dir: /app
-    command: python logic.py
-    environment:
-      - CHARGER_URL=http://charger:6082
-      - FILLER_URL=http://filler:4568
+    build: ./logic
     depends_on:
       - filler
       - charger
