@@ -19,16 +19,7 @@ services:
       - backend
 
   filler:
-    image: ruby
-    expose:
-      - "4568"
-    volumes:
-      - ./filler:/app
-    working_dir: /app
-    environment:
-      - PORT=4568
-      - LOGIC_PORT=4567
-    entrypoint: /app/entrypoint.sh
+    build: ./filler
     networks:
       - backend
 
