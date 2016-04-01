@@ -46,8 +46,7 @@ Body response:
       "count": 10,
       "price": 100,
       "name": "cola"
-    },
-    ...
+    }
   ]
 }
 ```
