@@ -28,7 +28,7 @@ $ docker-compose up -d
 
 First time this command will build all images. Then it will reuse them to build containers.
 
-Application will start on port `8080` of host machine or `docker-machine` (if [Docker Toolbox](https://www.docker.com/products/docker-toolbox) is used)
+Application will start on port `8080` of host machine or `docker-machine` (if [Docker Toolbox](https://www.docker.com/products/docker-toolbox) is used).
 
 ## Contribute
 
