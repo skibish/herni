@@ -1,44 +1,35 @@
-logic:
-  build: ./config/docker/logic
-  expose:
-    - "4567"
-  volumes:
-    - ./logic:/app
-  working_dir: /app
-  command: python logic.py
-  links:
-    - filler
-    - charger
-filler:
-  build: ./config/docker/logic
-  expose:
-    - "4568"
-  volumes:
-    - ./filler:/app
-  working_dir: /app
-  command: python filler.py
-charger:
-  build: ./config/docker/charger
-  expose:
-    - "6082"
-  volumes:
-    - ./charger:/app
-  working_dir: /app
-  command: python payment_svc.py
-interface:
-  build: ./config/docker/interface
-  environment:
-    - LOGIC_URL=http://logic:4567
-    - CHARGER_URL=http://charger:6082
-    - FILLER_URL=http://filler:4568
-    - PORT=8080
-  expose:
-    - "8080"
-  ports:
-    - 8080:8080
-  volumes:
-    - ./interface:/app
-  working_dir: /app
-  entrypoint: /root/entrypoint.sh
-  links:
-    - logic
+version: '2'
+services:
+  logic:
+    build: ./logic
+    depends_on:
+      - filler
+      - charger
+    networks:
+      - frontend
+      - backend
+
+  filler:
+    build: ./filler
+    networks:
+      - backend
+
+  charger:
+    build: ./charger
+    networks:
+      - backend
+
+  interface:
+    build: ./interface
+    ports:
+      - 8080:8080
+    depends_on:
+      - logic
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

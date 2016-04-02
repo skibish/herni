@@ -10,11 +10,11 @@ Start server with `node server.js` command.
 
 App will be available on `localhost:3000`
 
-MUST HAVE FOLLOWING ENV VARIABLES:
+## Environment variables
+
+It expecting following variables:
  - PORT (default 3000, but you can change to desired)
- - LOGIC_URL (endpoint of `logic` service)
- - CHARGER_URL (endpoint of `charger` sevice)
- - FILLER_URL (endpoint of `filler`)
+ - LOGIC_URL (endpoint of `logic` service, http://logic)
 
 ## Develop
 

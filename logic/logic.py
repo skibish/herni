@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 from flask import Flask, request
@@ -7,8 +8,8 @@ app = Flask(__name__)
 slots = []
 slot_count = 12
 slot_capacity = 10
-filler_url = ""
-charger_url = ""
+filler_url = os.getenv('FILLER_URL', 'http://localhost:4568')
+charger_url = os.getenv('CHARGER_URL', 'http://localhost:6082')
 session = None
 
 
@@ -51,8 +52,18 @@ class Slot:
             data = {'slot': self.number, 'capacity': self.capacity, 'product_id': self.product.product_id}
             headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
             r = requests.post(url, data=json.dumps(data), headers=headers)
+
             if r.status_code != 200:
                 raise Exception("Filler returned %d" % r.status_code)
+
+            data = json.loads(r.text)
+            data = data['product']
+            p = Product(data['id'], data['name'], data['price'])
+            slot_num = data['slot']
+            count = data['count']
+            slots[slot_num].fill(p, count)
+
+            print 'Refilled %d %s to slot %d' % (count, data['name'], slot_num)
         return True
 
     def to_dict(self):
@@ -110,7 +121,6 @@ class RestServer:
         pass
 
     # UI
-    # {"filler_url": "http://127.0.0.1:4568"}
     @staticmethod
     @app.route('/init', methods=['POST'])
     def init():
@@ -124,8 +134,6 @@ class RestServer:
         for i in range(0, slot_count):
             slots.append(Slot(i, slot_capacity))
         data = request.get_json(silent=True)
-        filler_url = data['filler_url']
-        charger_url = data['charger_url']
         url = filler_url + '/initial_fill'
         data = {'slots': slot_count, 'capacity': slot_capacity}
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
@@ -239,19 +247,6 @@ class RestServer:
 
         result = {"result": res, "credit": session.get_balance()}
         return json.dumps(result)
-
-    # Filler
-    @staticmethod
-    @app.route('/slot_refill', methods=['POST'])
-    def slot_refill():
-        data = request.get_json(silent=True)
-        data = data['product']
-        p = Product(data['id'], data['name'], data['price'])
-        slot_num = data['slot']
-        count = data['count']
-        slots[slot_num].fill(p, count)
-        print 'Refilled %d %s to slot %d' % (count, data['name'], slot_num)
-        return ""
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4567)
