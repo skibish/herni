@@ -7,6 +7,11 @@ It's a [Ruby](https://www.ruby-lang.org) application.
 
 Install all dependencies running `bundle install` command.
 
+To start an application type:
+```sh
+$ ruby app.rb
+```
+
 ## Environment variables
 
 It expecting two environment variables:
