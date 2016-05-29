@@ -10,7 +10,7 @@ Install all dependencies running `bundle install` command.
 ## Environment variables
 
 It expecting two environment variables:
-  - PORT - port of running application (default: 4568)
+  - PORT - port of running application (default: 9494)
   - LOGIC_PORT - port of Logic service (default: 4567)
 
 ## Routes
