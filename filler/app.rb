@@ -1,7 +1,7 @@
 require 'bundler'
 Bundler.require
 
-set :port, ENV['PORT'] || 9494
+set :port, ENV['PORT'] || 4568
 set :bind, '0.0.0.0'
 logic_port = ENV['LOGIC_PORT'] || 4567
 
