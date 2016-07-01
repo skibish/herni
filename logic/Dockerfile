@@ -6,13 +6,13 @@ ENV FILLER_URL http://filler:4568
 
 ADD . /app/
 
-WORKDIR /app
-
 RUN pip install flask requests
 
 # Create user and give permissions
 RUN useradd -ms /bin/bash usafe
 RUN chown -R usafe:usafe /app
+
+WORKDIR /app
 
 USER usafe
 
